@@ -9,10 +9,12 @@ public class Environment {
 		
 		Classroom classroom1 = new Classroom();
 		Door door1 = new Door();
+		Agent agent1 = new Agent();
 		
-		window.getContentPane().add(classroom1);
-		window.add(door1);
-		classroom1.draw();
+		//window.getContentPane().add(classroom1);
+		window.getContentPane().add(door1);
+		//window.getContentPane().add(agent1);
+		
 		
 		window.pack();
 		window.setVisible(true);

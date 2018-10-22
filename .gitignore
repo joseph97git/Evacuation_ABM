@@ -1,1 +1,10 @@
+<<<<<<< HEAD
+/bin/
+=======
+~*
+._*
+.TemporaryItems
+.DS_Store
+Thumbs.db
+>>>>>>> branch 'master' of https://web-cat.cs.vt.edu/Web-CAT/WebObjects/Web-CAT.woa/git/StudentProject/62aabb96-5b39-429d-8fbf-65d903d1587e
 /bin/
