@@ -7,8 +7,8 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 /**
- * Base layout of building. 
- * Default Layout: single room, 
+ * Base layout of building.
+ * Default Layout: single room,
  * one door, one agent.
  * 
  * @author Joseph Kim
@@ -21,6 +21,7 @@ public class Layout extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1L;
 
+    private Agent[] agents;
     private int width;
     private int depth;
     private Timer timer;
@@ -69,16 +70,18 @@ public class Layout extends JPanel implements ActionListener {
 
     /**
      * Calls parent and every child's
-     * paintCompenent method.
+     * paintComponent method.
      */
     public void actionPerformed(ActionEvent e) {
+        // update position
         repaint();
     }
-    
+
+
     /**
      * Creates the type of layout.
      * 
-     *  @param graphics
+     * @param graphics
      */
     public void create(Graphics2D graphics) {
         // single room
@@ -86,9 +89,9 @@ public class Layout extends JPanel implements ActionListener {
             this.depth - 80);
         graphics.setPaint(Color.BLACK);
         graphics.draw(room);
-        
+
         // one agent
-        Agent agent1 = new Agent(225, 200, 40, 80.0, 1.0);
+        Agent agent1 = new Agent(0, 225.0, 200.0, 40.0, 80.0, 1.0, agents);
         graphics.setPaint(Color.BLUE);
         graphics.fill(agent1.person());
     }

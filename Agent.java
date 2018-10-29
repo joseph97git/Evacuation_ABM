@@ -10,25 +10,33 @@ import java.awt.geom.*;
  */
 public class Agent extends JPanel {
 
-    private int x;
-    private int y;
-    private int xTarget;
-    private int yTarget;
+    /**
+     * Prevent different serial versions.
+     */
+    private static final long serialVersionUID = 2L;
+    private int id;
+    private double x;
+    private double y;
+    private double xTarget;
+    private double yTarget;
     private double radius;
     private double mass;
     private double velocity;
+    private Agent[] other;
     private Ellipse2D.Double person;
 
 
     /**
      * Creates a new agent object.
      */
-    public Agent(int x, int y, double r, double m, double v) {
+    public Agent(int id, double x, double y, double r, double m, double v, Agent[] other) {
+        this.id = id;
         this.x = x;
         this.y = y;
+        this.radius = r;
         this.mass = m;
         this.velocity = v;
-        this.radius = r;
+        this.other = other;
         this.person = new Ellipse2D.Double(x, y, r, r);
     }
 
@@ -49,7 +57,7 @@ public class Agent extends JPanel {
      * 
      * @return The x coordinate.
      */
-    public int xCoord() {
+    public double xCoord() {
         return this.x;
     }
 
@@ -59,7 +67,7 @@ public class Agent extends JPanel {
      * 
      * @return The y coordinate.
      */
-    public int yCoord() {
+    public double yCoord() {
         return this.y;
     }
 
@@ -70,7 +78,7 @@ public class Agent extends JPanel {
      * 
      * @return The x coordinate.
      */
-    public int xTarget() {
+    public double xTarget() {
         return this.xTarget;
     }
 
@@ -81,7 +89,7 @@ public class Agent extends JPanel {
      * 
      * @return The y coordinate.
      */
-    public int yTarget() {
+    public double yTarget() {
         return this.yTarget;
     }
 
