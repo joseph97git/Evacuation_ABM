@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
 
 /**
  * The agents within the model that
@@ -10,20 +11,20 @@ import java.awt.geom.*;
  */
 public class Agent extends JPanel {
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private int xTarget;
     private int yTarget;
     private double radius;
     private double mass;
-    private double velocity;
+    private double[] velocity;
     private Ellipse2D.Double person;
 
 
     /**
      * Creates a new agent object.
      */
-    public Agent(int x, int y, double r, double m, double v) {
+    public Agent(double x, double y, double r, double m, double[] v) {
         this.x = x;
         this.y = y;
         this.mass = m;
@@ -49,7 +50,7 @@ public class Agent extends JPanel {
      * 
      * @return The x coordinate.
      */
-    public int xCoord() {
+    public double xCoord() {
         return this.x;
     }
 
@@ -59,7 +60,7 @@ public class Agent extends JPanel {
      * 
      * @return The y coordinate.
      */
-    public int yCoord() {
+    public double yCoord() {
         return this.y;
     }
 
@@ -70,7 +71,7 @@ public class Agent extends JPanel {
      * 
      * @return The x coordinate.
      */
-    public int xTarget() {
+    public double xTarget() {
         return this.xTarget;
     }
 
@@ -81,7 +82,7 @@ public class Agent extends JPanel {
      * 
      * @return The y coordinate.
      */
-    public int yTarget() {
+    public double yTarget() {
         return this.yTarget;
     }
 
@@ -111,7 +112,7 @@ public class Agent extends JPanel {
      * 
      * @return The velocity.
      */
-    public double velocity() {
+    public double[] velocity() {
         return this.velocity;
     }
 
@@ -137,5 +138,31 @@ public class Agent extends JPanel {
      */
     public void setYTarget(int y) {
         this.yTarget = y;
+    }
+    
+    
+    
+    /**
+     * @param The wall giving force to Agent
+     * @return an x and y component of force vector
+     */
+    public double[]  wallForce(Wall wall) {
+    	double[] result = new double[2];
+    	double[] niW = new double[] {0,1}; //vector perpendicular of direction of wall
+    	double[] tiW = new double[] {0,1}; //vector tangent of direction of wall
+   	double A = 1.0; //constant
+    	double B = 1.0 ; //constant
+    	double k = 1.0; //constant
+    	double distance = Math.sqrt(Math.pow(wall.xCoord() - this.xCoord(), 2) + Math.pow(wall.yCoord() - this.yCoord(), 2));
+    	
+    	result[0] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[0];	//part1 x component	
+    	result[1] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[1];  //part1 y component
+    	
+    	double part2 = k*(this.radius() - distance)*(this.velocity()[0] * tiW[0] + this.velocity()[1] * tiW[1]); //part2 of formula
+    	result[0] = result[0]+part2*tiW[0]; //combining x components
+    	result[1] = result[1]+part2*tiW[1]; //combining y components
+
+    	return result;  //returns {x,y} vector array
+    	
     }
 }
