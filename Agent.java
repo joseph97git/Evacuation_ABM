@@ -171,12 +171,17 @@ public class Agent extends JPanel {
      */
     public double[]  wallForce(Wall wall) {
     	double[] result = new double[2];
-    	double[] niW = new double[] {0,1}; //vector perpendicular of direction of wall
-    	double[] tiW = new double[] {0,1}; //vector tangent of direction of wall
+    	double distance = Math.sqrt(Math.pow(wall.xCoord() - this.xCoord(), 2) + Math.pow(wall.yCoord() - this.yCoord(), 2));
+    	if (distance < this.radius())
+    	{
+
+    	double xtComp = (wall.getX() - this.getX()) / distance;
+    	double ytComp = (wall.getY() - this.getY()) / distance;
+    	double[] tiW = new double[] {xtComp,ytComp}; //vector tangent of direction of wall
+    	double[] niW = new double[] {ytComp,xtComp * -1}; //vector perpendicular of direction of wall
    	double A = 1.0; //constant
     	double B = 1.0 ; //constant
     	double k = 1.0; //constant
-    	double distance = Math.sqrt(Math.pow(wall.xCoord() - this.xCoord(), 2) + Math.pow(wall.yCoord() - this.yCoord(), 2));
     	
     	result[0] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[0];	//part1 x component	
     	result[1] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[1];  //part1 y component
@@ -184,8 +189,15 @@ public class Agent extends JPanel {
     	double part2 = k*(this.radius() - distance)*(this.velocity()[0] * tiW[0] + this.velocity()[1] * tiW[1]); //part2 of formula
     	result[0] = result[0]+part2*tiW[0]; //combining x components
     	result[1] = result[1]+part2*tiW[1]; //combining y components
+    	}
+    	else
+    	{
+    		result[0] = 0;
+    		result[1] = 0;
+    	}
 
     	return result;  //returns {x,y} vector array
     	
     }
+    
 }
