@@ -91,7 +91,7 @@ public class Layout extends JPanel implements ActionListener {
         graphics.draw(room);
 
         // one agent
-        Agent agent1 = new Agent(0, 225.0, 200.0, 40.0, 80.0, 1.0, agents);
+        Agent agent1 = new Agent(0, 225.0, 200.0, 40.0, 80.0, null, agents);
         graphics.setPaint(Color.BLUE);
         graphics.fill(agent1.person());
     }
