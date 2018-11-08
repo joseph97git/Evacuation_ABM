@@ -11,12 +11,6 @@ import java.util.ArrayList;
  */
 public class Agent extends JPanel {
 
-<<<<<<< HEAD
-    private double x;
-    private double y;
-    private int xTarget;
-    private int yTarget;
-=======
     /**
      * Prevent different serial versions.
      */
@@ -26,27 +20,19 @@ public class Agent extends JPanel {
     private double y;
     private double xTarget;
     private double yTarget;
->>>>>>> branch 'master' of https://github.com/joseph97git/Evacuation_ABM.git
     private double radius;
     private double mass;
-<<<<<<< HEAD
     private double[] velocity;
-=======
-    private double velocity;
     private Agent[] other;
->>>>>>> branch 'master' of https://github.com/joseph97git/Evacuation_ABM.git
     private Ellipse2D.Double person;
 
 
     /**
      * Creates a new agent object.
      */
-<<<<<<< HEAD
-    public Agent(double x, double y, double r, double m, double[] v) {
-=======
-    public Agent(int id, double x, double y, double r, double m, double v, Agent[] other) {
+
+    public Agent(int id, double x, double y, double r, double m, double [] v, Agent[] other) {
         this.id = id;
->>>>>>> branch 'master' of https://github.com/joseph97git/Evacuation_ABM.git
         this.x = x;
         this.y = y;
         this.radius = r;
