@@ -22,12 +22,12 @@ public class Agent extends JPanel {
     private static final double kappa = 240000.0; // kg * m^{-1} * s^{-1}
     private static final double vi = 0.8; // m * s^{-1}
     private static final double delta_t = 0.01; // s
+    private static final double scaler = 150;
 
     private int id; // identification
     private double[] p; // position
     private double[] target; // exit
     private double radius;
-    private double[] center;
     private double mass;
     private double[] velocity;
     private Agent[] other; // all agents
@@ -47,9 +47,6 @@ public class Agent extends JPanel {
         this.id = id;
         this.p = p;
         this.radius = r;
-        this.center = new double[2];
-        this.center[0] = this.p[0] + r;
-        this.center[1] = this.p[1] + r;
         this.mass = m;
         this.velocity = v;
         this.other = other;
@@ -67,14 +64,16 @@ public class Agent extends JPanel {
         double[] vtime = new double[2];
         vtime[0] = this.velocity[0] * delta_t;
         vtime[1] = this.velocity[1] * delta_t;
+        if (this.id == 0)
+            System.out.println(Math.sqrt(this.velocity[0] * this.velocity[0] + this.velocity[1] * this.velocity[1]));
         // force time-step
         double[] ftime = new double[2];
         double[] force = this.f();
-        ftime[0] = force[0] * delta_t / this.mass;
-        ftime[1] = force[1] * delta_t / this.mass;
+        ftime[0] = (force[0] * delta_t / this.mass);
+        ftime[1] = (force[1] * delta_t / this.mass);
         // position update
-        this.p[0] = this.p[0] + vtime[0];
-        this.p[1] = this.p[1] + vtime[1];
+        this.p[0] = (this.p[0] + vtime[0] * scaler);
+        this.p[1] = (this.p[1] + vtime[1] * scaler);
         this.person.setFrame(this.p[0], this.p[1], this.radius, this.radius);
         // velocity update
         this.velocity[0] = this.velocity[0] + ftime[0];
@@ -84,7 +83,7 @@ public class Agent extends JPanel {
 
     /**
      * Calculates the distance between two agents'
-     * center of masses.
+     * p of masses.
      * 
      * @param i
      *            The first agent
@@ -134,8 +133,8 @@ public class Agent extends JPanel {
 
         // calculate force
         double[] ftot = new double[2];
-        ftot[0] = agentForce[0] + interactiveForce[0];
-        ftot[1] = agentForce[1] + interactiveForce[1];
+        ftot[0] = agentForce[0]; //+ interactiveForce[0];
+        ftot[1] = agentForce[1]; //+ interactiveForce[1];
         return ftot;
     }
 
@@ -149,9 +148,9 @@ public class Agent extends JPanel {
      * @return The motivation force vector.
      */
     public double[] f_i() {
-        double xsqrd = this.velocity[0] * this.velocity[0];
-        double ysqrd = this.velocity[1] * this.velocity[1];
-        double velNorm = Math.sqrt(xsqrd + ysqrd);
+        double x_comp = this.velocity[0];
+        double y_comp = this.velocity[1];
+        double velNorm = Math.sqrt(x_comp * x_comp + y_comp * y_comp);
         double[] zVec = new double[2];
         zVec[0] = 0.0;
         zVec[1] = 0.0;
@@ -160,12 +159,12 @@ public class Agent extends JPanel {
             double[] velMax = new double[2];
             double[] f = new double[2];
             double[] ei = this.e_i();
-            velMax[0] = vi * ei[0];
-            velMax[1] = vi * ei[1];
-            velNew[0] = velMax[0] - this.velocity[0];
-            velNew[1] = velMax[1] - this.velocity[1];
-            f[0] = this.mass * (velNew[0] / tau);
-            f[1] = this.mass * (velNew[1] / tau);
+            velMax[0] = vi * (ei[0] - this.p()[0]) + this.p()[0];
+            velMax[1] = vi * (ei[1] - this.p()[1]) + this.p()[1];
+            velNew[0] = (velMax[0] - (this.velocity[0] + this.p()[0]));
+            velNew[1] = (velMax[1] - (this.velocity[1] + this.p()[1]));
+            f[0] = (this.mass * (velNew[0] / tau));
+            f[1] = (this.mass * (velNew[1] / tau));
             return f;
         }
         return zVec;
@@ -185,8 +184,8 @@ public class Agent extends JPanel {
     public double[] f_ij(Agent i, Agent j) {
         // base info
         double r_ij = i.radius + j.radius;
-        double d_ij = this.dist_ij(i.center, j.center);
-        double[] n_ij = this.n_ij(j.center);
+        double d_ij = this.dist_ij(i.p, j.p);
+        double[] n_ij = this.n_ij(j.p);
         double[] v_ji = this.v_ji(j.velocity);
         double[] t_ij = this.t_ij(n_ij);
         // create scalars
@@ -206,41 +205,6 @@ public class Agent extends JPanel {
         f_ij[0] = bodyForce[0] + tangentForce[0];
         f_ij[1] = bodyForce[1] + tangentForce[1];
         return f_ij;
-    }
-    
-    /**
-     * @param The wall giving force to Agent
-     * @return an x and y component of force vector
-     */
-    public double[]  wallForce(Wall wall) {
-        double[] result = new double[2];
-        double distance = Math.sqrt(Math.pow(wall.xCoord() - this.p[0], 2) + Math.pow(wall.yCoord() - this.p[1], 2));
-        if (distance < this.radius())
-        {
-
-        double xtComp = (wall.getX() - this.getX()) / distance;
-        double ytComp = (wall.getY() - this.getY()) / distance;
-        double[] tiW = new double[] {xtComp,ytComp}; //vector tangent of direction of wall
-        double[] niW = new double[] {ytComp,xtComp * -1}; //vector perpendicular of direction of wall
-        double A = 1.0; //constant
-        double B = 1.0 ; //constant
-        double k = 1.0; //constant
-        
-        result[0] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[0];    //part1 x component 
-        result[1] = ((A*Math.exp(this.radius() - distance))/B + k*(this.radius()- distance))*niW[1];  //part1 y component
-        
-        double part2 = k*(this.radius() - distance)*(this.velocity()[0] * tiW[0] + this.velocity()[1] * tiW[1]); //part2 of formula
-        result[0] = result[0]+part2*tiW[0]; //combining x components
-        result[1] = result[1]+part2*tiW[1]; //combining y components
-        }
-        else
-        {
-            result[0] = 0;
-            result[1] = 0;
-        }
-
-        return result;  //returns {x,y} vector array
-        
     }
 
 
@@ -266,14 +230,14 @@ public class Agent extends JPanel {
      * @return The resulting unit vector.
      */
     public double[] e_i() {
-        double xi = this.center[0];
-        double yi = this.center[1];
+        double xi = this.p[0];
+        double yi = this.p[1];
         double xt = this.target[0];
         double yt = this.target[1];
-        double dist_it = this.dist_ij(this.center, this.target);
+        double dist_it = this.dist_ij(this.p, this.target);
         double[] unit = new double[2];
-        unit[0] = Math.abs(xt - xi) / dist_it;
-        unit[1] = Math.abs(yt - yi) / dist_it;
+        unit[0] = ((xt - xi) / dist_it) + xi;
+        unit[1] = ((yt - yi) / dist_it) + yi;
         return unit;
     }
 
@@ -283,18 +247,18 @@ public class Agent extends JPanel {
      * agent j to agent i (this agent)
      * 
      * @param j
-     *            The center of the other agent.
+     *            The p of the other agent.
      * @return The unit normal vector
      */
     public double[] n_ij(double[] j) {
-        double d_ij = this.dist_ij(this.center, j);
-        double xi = this.center[0];
-        double yi = this.center[1];
+        double d_ij = this.dist_ij(this.p(), j);
+        double xi = this.p[0];
+        double yi = this.p[1];
         double xj = j[0];
         double yj = j[1];
         double[] unit = new double[2];
-        unit[0] = (xi - xj) / d_ij;
-        unit[1] = (yi - yj) / d_ij;
+        unit[0] = ((xi - xj) / d_ij) + xi;
+        unit[1] = ((yi - yj) / d_ij) + yi;
         return unit;
     }
 
@@ -374,7 +338,7 @@ public class Agent extends JPanel {
      * @return True, if touching. False, if not.
      */
     public boolean isTouching(Agent a1, Agent a2) {
-        return dist_ij(a1.center, a2.center) <= (a1.radius + a2.radius);
+        return dist_ij(a1.p(), a2.p()) <= (a1.radius() + a2.radius());
     }
 
 
@@ -390,16 +354,6 @@ public class Agent extends JPanel {
 
 
     /**
-     * Gets the position of the agent.
-     * 
-     * @return The position
-     */
-    public double[] pos() {
-        return this.pos();
-    }
-
-
-    /**
      * Sets the position of the agent
      */
     public void setPos(double[] pos) {
@@ -408,12 +362,12 @@ public class Agent extends JPanel {
 
 
     /**
-     * Gets the center of the agent.
+     * Gets the p of the agent.
      * 
-     * @return The array with center coordinates.
+     * @return The array with p coordinates.
      */
-    public double[] center() {
-        return this.center;
+    public double[] p() {
+        return this.p;
     }
 
 
