@@ -41,6 +41,28 @@ public class Layout extends JPanel implements ActionListener {
         this.width = width;
         this.depth = depth;
         this.timer = new Timer(5, this);
+        agents = new Agent[2];
+        double[] v_init1 = new double[2];
+        v_init1[0] = 0.0;
+        v_init1[1] = 0.0;
+        double[] v_init2 = new double[2];
+        v_init2[0] = 0.0;
+        v_init2[1] = 0.0;
+        double[] pos1 = new double[2];
+        pos1[0] = 200.0;
+        pos1[1] = 200.0 - 100.0;
+        double[] pos2 = new double[2];
+        pos2[0] = 260.0;
+        pos2[1] = 200.0 - 100.0;
+        Agent agent1 = new Agent(0, pos1, 30.0, 80.0, v_init1, this.agents);
+        Agent agent2 = new Agent(1, pos2, 30.0, 80.0, v_init2, this.agents);
+        double[] target = new double[2];
+        target[0] = 230.0;
+        target[1] = 435.0;
+        agent1.setTarget(target);
+        agent2.setTarget(target);
+        this.agents[0] = agent1;
+        this.agents[1] = agent2;
     }
 
 
@@ -74,6 +96,9 @@ public class Layout extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         // update position
+        for (int i = 0; i < this.agents.length; i++) {
+            this.agents[i].updateVectors();
+        }
         repaint();
     }
 
@@ -90,10 +115,15 @@ public class Layout extends JPanel implements ActionListener {
         graphics.setPaint(Color.BLACK);
         graphics.draw(room);
 
-        // one agent
-        Agent agent1 = new Agent(0, 225.0, 200.0, 40.0, 80.0, null, agents);
+        // two agents
         graphics.setPaint(Color.BLUE);
-        graphics.fill(agent1.person());
+        graphics.fill(this.agents[0].person());
+        graphics.fill(this.agents[1].person());
+
+        // exit
+        Exit exit1 = new Exit(220.0, 445.0, 50.0, 10.0);
+        graphics.setPaint(Color.GREEN);
+        graphics.fill(exit1.door());
     }
 
 }

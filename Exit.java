@@ -11,10 +11,10 @@ import java.awt.geom.Rectangle2D;
  */
 public class Exit {
 
-    private int x;
-    private int y;
-    private int width;
-    private int length;
+    private double x;
+    private double y;
+    private double width;
+    private double length;
     private Rectangle2D.Double door;
 
 
@@ -26,7 +26,7 @@ public class Exit {
      * @param length
      *            The length of the door.
      */
-    public Exit(int x, int y, int width, int length) {
+    public Exit(double x, double y, double width, double length) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -41,7 +41,7 @@ public class Exit {
      * 
      * @return The x coordinate.
      */
-    public int xCoord() {
+    public double xCoord() {
         return this.x;
     }
 
@@ -52,7 +52,7 @@ public class Exit {
      * 
      * @return The y coordinate.
      */
-    public int yCoord() {
+    public double yCoord() {
         return this.y;
     }
 
@@ -62,7 +62,7 @@ public class Exit {
      * 
      * @return The width.
      */
-    public int width() {
+    public double width() {
         return this.width;
     }
 
@@ -72,7 +72,7 @@ public class Exit {
      * 
      * @return The length.
      */
-    public int length() {
+    public double length() {
         return this.length;
     }
 
