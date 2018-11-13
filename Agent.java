@@ -218,9 +218,36 @@ public class Agent extends JPanel {
      *            The wall
      * @return The resulting force vector.
      */
-    public double[] f_iW(Agent i, Object w) {
-        return null;
+    public double[] f_iW(Agent i, Wall w) {
+        w = new Wall(w.getX(), w.getY());
+        double[] wallPos = new double[] {w.getX(), w.getY()};
+        double[] thisPos = new double[] {this.getX(), this.getY()};
+        
+        double dist = this.dist_ij(wallPos, thisPos);
+        double[] f_iW = new double[2];
+        f_iW[0] = (thisPos[0] - wallPos[0])/dist;
+        f_iW[1] = (thisPos[1] - wallPos[1])/dist;
+        return f_iW;
     }
+    
+    /**
+     * Calculates the 'body force' and 'perpendicular force'
+     * between this agent and the walls.
+     * 
+     * @param i
+     *            This agent
+     * @param w
+     *            The wall
+     * @return The resulting force vector.
+     */
+    public double[] t_iW(Agent i, Wall w) {
+    		w = new Wall(w.getX(), w.getY());
+    		double[] fiW = this.f_iW(this, w);
+    		double[] t_iW = new double[] {fiW[1], -fiW[0]};
+    		return t_iW;
+    }
+    
+    
 
 
     /**
