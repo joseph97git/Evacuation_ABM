@@ -24,7 +24,6 @@ public class Layout extends JPanel implements ActionListener {
     private Agent[] agents;
     private int width;
     private int depth;
-    private JFrame window;
     private Timer timer;
     
     /**
@@ -70,7 +69,7 @@ public class Layout extends JPanel implements ActionListener {
      * Runs the single room evacuation.
      */
     public void run() {
-        this.window = new JFrame("Evacuation ABM");
+        JFrame window = new JFrame("Evacuation ABM");
         window.add(this);
         window.setVisible(true);
         window.setSize(this.width, this.depth);
@@ -109,24 +108,22 @@ public class Layout extends JPanel implements ActionListener {
      */
     public void create(Graphics2D graphics) {
         // single room
-        Rectangle2D room = new Rectangle2D.Double(25, 25, this.window.getWidth() - 60,
-            this.window.getHeight() - 80);
+    	Rectangle2D room = new Rectangle2D.Double(25, 25, this.width - 60,
+                this.depth - 80);
         graphics.setPaint(Color.BLACK);
         graphics.draw(room);
         
         // exit
-        Exit exit1 = new Exit((this.window.getWidth()-50)/2, this.window.getHeight()-55, 50.0, 10.0);
+        Exit exit1 = new Exit(220.0, 445.0, 50.0, 10.0);
         graphics.setPaint(Color.GREEN);
         graphics.fill(exit1.door());
         
         // two agents
         double[] target = new double[2];
-        target[0] = exit1.xCoord();
+        target[0] = exit1.xCoord() + exit1.length()/2;
         target[1] = exit1.yCoord();
         this.agents[0].setTarget(target);
         this.agents[1].setTarget(target);
-        this.agents[0].updateR((this.window.getWidth()+this.window.getHeight())/32);
-        this.agents[1].updateR((this.window.getWidth()+this.window.getHeight())/32);
         graphics.setPaint(Color.BLUE);
         graphics.fill(this.agents[0].person());
         graphics.fill(this.agents[1].person());
