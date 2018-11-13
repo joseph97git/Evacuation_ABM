@@ -420,4 +420,13 @@ public class Agent extends JPanel {
     public void setTarget(double[] target) {
         this.target = target;
     }
+    
+    /**
+     * Update current radius based on the proportion
+     * @param r
+     * 			current agent's radius
+     */
+    public void updateR(double r) {
+    	this.radius = r;
+    }
 }
