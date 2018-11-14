@@ -50,7 +50,7 @@ public class Agent extends JPanel {
         this.mass = m;
         this.velocity = v;
         this.other = other;
-        this.person = new Ellipse2D.Double(this.p[0], this.p[1], r, r);
+        this.person = new Ellipse2D.Double(this.p[0] - r, this.p[1] - r, 2 * r, 2 * r);
     }
 
 
@@ -74,7 +74,7 @@ public class Agent extends JPanel {
         // position update
         this.p[0] = (this.p[0] + vtime[0] * scaler);
         this.p[1] = (this.p[1] + vtime[1] * scaler);
-        this.person.setFrame(this.p[0], this.p[1], this.radius, this.radius);
+        this.person.setFrame(this.p[0] - this.radius, this.p[1] - this.radius, 2 * this.radius, 2 * this.radius);
         // velocity update
         this.velocity[0] = this.velocity[0] + ftime[0];
         this.velocity[1] = this.velocity[1] + ftime[1];
@@ -133,8 +133,8 @@ public class Agent extends JPanel {
 
         // calculate force
         double[] ftot = new double[2];
-        ftot[0] = agentForce[0]; //+ interactiveForce[0];
-        ftot[1] = agentForce[1]; //+ interactiveForce[1];
+        ftot[0] = agentForce[0] + interactiveForce[0];
+        ftot[1] = agentForce[1] + interactiveForce[1];
         return ftot;
     }
 
@@ -182,11 +182,11 @@ public class Agent extends JPanel {
      * @return The resulting body force vector.
      */
     public double[] f_ij(Agent i, Agent j) {
-        // base info
-        double r_ij = i.radius + j.radius;
-        double d_ij = this.dist_ij(i.p, j.p);
-        double[] n_ij = this.n_ij(j.p);
-        double[] v_ji = this.v_ji(j.velocity);
+     // base info
+        double r_ij = i.radius() / scaler + j.radius() / scaler;
+        double d_ij = this.dist_ij(i.p(), j.p()) / scaler;
+        double[] n_ij = this.n_ij(j.p());
+        double[] v_ji = this.v_ji(j.velocity());
         double[] t_ij = this.t_ij(n_ij);
         // create scalars
         double normal_scaler = A * Math.exp((r_ij - d_ij) / B) + k * g(r_ij
@@ -195,11 +195,11 @@ public class Agent extends JPanel {
             t_ij);
         // calculate force components
         double[] bodyForce = new double[2];
-        bodyForce[0] = normal_scaler * n_ij[0];
-        bodyForce[1] = normal_scaler * n_ij[1];
+        bodyForce[0] = normal_scaler * n_ij[0] / scaler;
+        bodyForce[1] = normal_scaler * n_ij[1] / scaler;
         double[] tangentForce = new double[2];
-        tangentForce[0] = tangent_scaler * t_ij[0];
-        tangentForce[1] = tangent_scaler * t_ij[1];
+        tangentForce[0] = tangent_scaler * t_ij[0] / scaler;
+        tangentForce[1] = tangent_scaler * t_ij[1] / scaler;
         // calculate sum of forces
         double[] f_ij = new double[2];
         f_ij[0] = bodyForce[0] + tangentForce[0];
@@ -284,8 +284,8 @@ public class Agent extends JPanel {
         double xj = j[0];
         double yj = j[1];
         double[] unit = new double[2];
-        unit[0] = ((xi - xj) / d_ij) + xi;
-        unit[1] = ((yi - yj) / d_ij) + yi;
+        unit[0] = (xi - xj) / d_ij;
+        unit[1] = (yi - yj) / d_ij;
         return unit;
     }
 

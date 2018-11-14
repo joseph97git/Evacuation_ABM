@@ -58,8 +58,8 @@ public class Layout extends JPanel implements ActionListener {
         pos2[0] = 260.0;
         pos2[1] = 200.0 - 100.0;
         
-        Agent agent1 = new Agent(0, pos1, 30.0, 80.0, v_init1, this.agents);
-        Agent agent2 = new Agent(1, pos2, 30.0, 80.0, v_init2, this.agents);
+        Agent agent1 = new Agent(0, pos1, 15.0, 80.0, v_init1, this.agents);
+        Agent agent2 = new Agent(1, pos2, 15.0, 80.0, v_init2, this.agents);
         
         this.agents[0] = agent1;
         this.agents[1] = agent2;
@@ -120,8 +120,8 @@ public class Layout extends JPanel implements ActionListener {
         
         // two agents
         double[] target = new double[2];
-        target[0] = exit1.xCoord() + exit1.length()/2;
-        target[1] = exit1.yCoord();
+        target[0] = exit1.xCoord() + exit1.length()/2 + 20;
+        target[1] = exit1.yCoord() + 20;
         this.agents[0].setTarget(target);
         this.agents[1].setTarget(target);
         graphics.setPaint(Color.BLUE);
