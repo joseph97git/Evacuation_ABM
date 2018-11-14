@@ -121,7 +121,7 @@ public class Layout extends JPanel implements ActionListener {
         // two agents
         double[] target = new double[2];
         target[0] = exit1.xCoord() + exit1.length()/2 + 20;
-        target[1] = exit1.yCoord() + 20;
+        target[1] = exit1.yCoord() + 30;
         this.agents[0].setTarget(target);
         this.agents[1].setTarget(target);
         graphics.setPaint(Color.BLUE);
