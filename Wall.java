@@ -15,6 +15,7 @@ public class Wall extends JPanel {
 	private double x;
 	private double y;
 	private Rectangle2D.Double wall;
+	private double p;
 	
 	public Wall(double x, double y)
 	{
@@ -38,4 +39,8 @@ public class Wall extends JPanel {
 		return this.wall;
 	}
 
+	public double[] p() {
+		double[] pos = new double[] {this.xCoord(), this.yCoord()};
+		return pos;
+	}
 }

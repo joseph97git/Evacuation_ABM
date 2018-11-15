@@ -137,6 +137,21 @@ public class Agent extends JPanel {
         ftot[1] = agentForce[1]; //+ interactiveForce[1];
         return ftot;
     }
+    
+    public double[] wallForce(Wall wall) {
+    		double dist = this.dist_ij(wall.p(), this.p()) - this.radius();
+    		double A = 1.0;
+    		double B = 1.0;
+    		double k = 1.0;
+    		double[] result = new double[2];
+    		double[] n = this.n_iW(this, wall);
+    		double[] t = this.t_iW(this, wall);
+    		double[] vel = this.velocity();
+    		result[0] = A * Math.exp((this.radius() - dist)/B) + k*(this.radius()- dist)*n[0]+k*(this.radius - dist)*(vel[0]*t[0])*t[0];
+    		result[1] = A * Math.exp((this.radius() - dist)/B) + k*(this.radius()- dist)*n[1]+k*(this.radius - dist)*(vel[1]*t[1])*t[1];
+    		return result;
+    		
+    }
 
 
     /**
@@ -218,8 +233,7 @@ public class Agent extends JPanel {
      *            The wall
      * @return The resulting force vector.
      */
-    public double[] f_iW(Agent i, Wall w) {
-        w = new Wall(w.getX(), w.getY());
+    public double[] n_iW(Agent i, Wall w) {
         double[] wallPos = new double[] {w.getX(), w.getY()};
         double[] thisPos = new double[] {this.getX(), this.getY()};
         
@@ -242,7 +256,7 @@ public class Agent extends JPanel {
      */
     public double[] t_iW(Agent i, Wall w) {
     		w = new Wall(w.getX(), w.getY());
-    		double[] fiW = this.f_iW(this, w);
+    		double[] fiW = this.t_iW(this, w);
     		double[] t_iW = new double[] {fiW[1], -fiW[0]};
     		return t_iW;
     }
@@ -367,6 +381,21 @@ public class Agent extends JPanel {
     public boolean isTouching(Agent a1, Agent a2) {
         return dist_ij(a1.p(), a2.p()) <= (a1.radius() + a2.radius());
     }
+    
+    /**
+     * Checks if agent and wall are touching.
+     * 
+     * @param a1
+     *            The first agent
+     * @param a2
+     *            The second agent
+     * @return True, if touching. False, if not.
+     */
+    public boolean isTouching2(Agent a1, Wall a2) {
+        return dist_ij(a1.p(), a2.p()) <= (a1.radius());
+    }
+    
+    
 
 
     /**
