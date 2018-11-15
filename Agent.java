@@ -138,17 +138,20 @@ public class Agent extends JPanel {
         return ftot;
     }
     
-    public double[] wallForce(Wall wall) {
-    		double dist = this.dist_ij(wall.p(), this.p()) - this.radius();
-    		double A = 1.0;
-    		double B = 1.0;
-    		double k = 1.0;
+    public double[] f_iW(Agent i, Wall w) {
+    		double d_iw = this.dist_ij(w.p(), this.p())/scaler;
     		double[] result = new double[2];
-    		double[] n = this.n_iW(this, wall);
-    		double[] t = this.t_iW(this, wall);
+    		double[] n_iW = this.n_iW(i, w);
+    		double[] t_iW = this.t_iW(i, w);
     		double[] vel = this.velocity();
-    		result[0] = A * Math.exp((this.radius() - dist)/B) + k*(this.radius()- dist)*n[0]+k*(this.radius - dist)*(vel[0]*t[0])*t[0];
-    		result[1] = A * Math.exp((this.radius() - dist)/B) + k*(this.radius()- dist)*n[1]+k*(this.radius - dist)*(vel[1]*t[1])*t[1];
+    		result[0] = (A * Math.exp((this.radius() - d_iw)/B) + kappa*(this.radius()- d_iw))*n_iW[0]/scaler;		
+    		result[1] = (A * Math.exp((this.radius() - d_iw)/B) + kappa*(this.radius()- d_iw))*n_iW[1]/scaler;
+    		double[] comp2 = new double[2];
+    		comp2[0] = k*(this.radius()-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1])*t_iW[0]/scaler;
+    		comp2[1] = k*(this.radius()-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1])*t_iW[1]/scaler;
+    		result[0] += comp2[0];
+    		result[1] += comp2[1];
+    				
     		return result;
     		
     }
@@ -256,7 +259,7 @@ public class Agent extends JPanel {
      */
     public double[] t_iW(Agent i, Wall w) {
     		w = new Wall(w.getX(), w.getY());
-    		double[] fiW = this.t_iW(this, w);
+    		double[] fiW = this.n_iW(this, w);
     		double[] t_iW = new double[] {fiW[1], -fiW[0]};
     		return t_iW;
     }
