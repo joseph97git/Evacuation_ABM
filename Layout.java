@@ -51,18 +51,19 @@ public class Layout extends JPanel implements ActionListener {
         v_init2[1] = 0.0;
         
         double[] pos1 = new double[2];
-        pos1[0] = 200.0;
-        pos1[1] = 200.0 - 100.0;
+        pos1[0] = 300.0;
+        pos1[1] = 300.0 - 100.0;
         
         double[] pos2 = new double[2];
-        pos2[0] = 260.0;
-        pos2[1] = 200.0 - 100.0;
+        pos2[0] = 360.0;
+        pos2[1] = 300.0 - 100.0;
         
-        Agent agent1 = new Agent(0, pos1, 30.0, 80.0, v_init1, this.agents);
-        Agent agent2 = new Agent(1, pos2, 30.0, 80.0, v_init2, this.agents);
+        Agent agent1 = new Agent(0, pos1, 15, 80.0, v_init1, this.agents);
+        Agent agent2 = new Agent(1, pos2, 15, 80.0, v_init2, this.agents);
         
         this.agents[0] = agent1;
         this.agents[1] = agent2;
+
     }
 
     /**
@@ -107,23 +108,39 @@ public class Layout extends JPanel implements ActionListener {
      * @param graphics
      */
     public void create(Graphics2D graphics) {
+    	// Classroom proportion width:depth = 1.2647:1
         // single room
-    	Rectangle2D room = new Rectangle2D.Double(25, 25, this.width - 60,
+    	Rectangle2D room = new Rectangle2D.Double(
+    			((this.width - (this.depth - 80)*1.2647)) / 2,	// Center the room
+    			25, 
+    			(this.depth - 80)*1.2647,
                 this.depth - 80);
         graphics.setPaint(Color.BLACK);
         graphics.draw(room);
         
+        // Door width:room width = 1:200
+        // Door depth:room depth = 1:7.5055
+        // Distance from corner to the edge of the door:room depth = 1:18.889 
         // exit
-        Exit exit1 = new Exit(220.0, 445.0, 50.0, 10.0);
+        Exit exit1 = new Exit(room.getWidth() + (this.width - (this.depth - 80)*1.2647) / 2 - room.getWidth()/200/2, 
+        		room.getY() + room.getWidth()/18.889, 
+        		room.getWidth()/200, 
+        		room.getHeight()/7.5055);
         graphics.setPaint(Color.GREEN);
         graphics.fill(exit1.door());
         
         // two agents
         double[] target = new double[2];
-        target[0] = exit1.xCoord() + exit1.length()/2;
-        target[1] = exit1.yCoord();
+        target[0] = exit1.xCoord();
+        target[1] = exit1.yCoord() + exit1.length()/2;
         this.agents[0].setTarget(target);
         this.agents[1].setTarget(target);
+        
+        // radius of a person : door depth = 1:6.04
+        // update agents' radii based on the proportions
+        this.agents[0].updateR(exit1.length()/6.04);
+        this.agents[1].updateR(exit1.length()/6.04);
+        
         graphics.setPaint(Color.BLUE);
         graphics.fill(this.agents[0].person());
         graphics.fill(this.agents[1].person());

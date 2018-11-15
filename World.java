@@ -1,7 +1,10 @@
 
 public class World {
 	public static void main(String[] args) {
-		Layout oneRoom = new Layout(500, 500);
+		// Classroom proportion width:depth = 1.2647:1
+		int depth = 500;
+		double width = depth*1.2647;
+		Layout oneRoom = new Layout((int) width, depth);
 		oneRoom.run();
 	}
 }
