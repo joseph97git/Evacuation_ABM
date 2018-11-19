@@ -31,6 +31,7 @@ public class Agent extends JPanel {
     private double mass;
     private double[] velocity;
     private Agent[] other; // all agents
+    private Obstacle[] walls;
     private Ellipse2D.Double person; // GUI representation
 
 
@@ -43,13 +44,15 @@ public class Agent extends JPanel {
         double r,
         double m,
         double[] v,
-        Agent[] other) {
+        Agent[] other,
+        Obstacle[] walls) {
         this.id = id;
         this.p = p;
         this.radius = r;
         this.mass = m;
         this.velocity = v;
         this.other = other;
+        this.walls = walls;
         this.person = new Ellipse2D.Double(this.p[0] - r, this.p[1] - r, 2 * r, 2 * r);
     }
 
