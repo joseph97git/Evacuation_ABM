@@ -149,8 +149,8 @@ public class Agent extends JPanel {
     		double[] comp2 = new double[2];
     		comp2[0] = k*(this.radius()-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1])*t_iW[0]/scaler;
     		comp2[1] = k*(this.radius()-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1])*t_iW[1]/scaler;
-    		result[0] += comp2[0];
-    		result[1] += comp2[1];
+    		result[0] -= comp2[0];
+    		result[1] -= comp2[1];
     				
     		return result;
     		
@@ -237,13 +237,13 @@ public class Agent extends JPanel {
      * @return The resulting force vector.
      */
     public double[] n_iW(Agent i, Wall w) {
-        double[] wallPos = new double[] {w.getX(), w.getY()};
+        double[] wallPos = new double[] {w.xCoord(), w.yCoord()};
         double[] thisPos = new double[] {this.getX(), this.getY()};
         
-        double dist = this.dist_ij(wallPos, thisPos);
+        double d_ij = this.dist_ij(wallPos, thisPos);
         double[] f_iW = new double[2];
-        f_iW[0] = (thisPos[0] - wallPos[0])/dist;
-        f_iW[1] = (thisPos[1] - wallPos[1])/dist;
+        f_iW[0] = (wallPos[0] - thisPos[0])/d_ij;
+        f_iW[1] = (wallPos[1] - thisPos[1])/d_ij;
         return f_iW;
     }
     
@@ -258,7 +258,7 @@ public class Agent extends JPanel {
      * @return The resulting force vector.
      */
     public double[] t_iW(Agent i, Wall w) {
-    		w = new Wall(w.getX(), w.getY());
+    		w = new Wall(w.xCoord(), w.yCoord());
     		double[] fiW = this.n_iW(this, w);
     		double[] t_iW = new double[] {fiW[1], -fiW[0]};
     		return t_iW;
