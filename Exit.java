@@ -36,7 +36,7 @@ public class Exit {
 
 
     /**
-     * Gets the x coordinate fo the
+     * Gets the x coordinate of the
      * exit.
      * 
      * @return The x coordinate.

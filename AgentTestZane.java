@@ -9,7 +9,7 @@ public class AgentTestZane extends TestCase {
 	{
 		double[] pos = new double[] {0,0};
 		double[] vel = new double[] {1,1};
-		a = new Agent(1, pos, 3.0, 100.0, vel, null);
+		a = new Agent(1, pos, 3.0, 100.0, vel, null, null);
 		b = new Wall(1, 0);
 	}
 	
