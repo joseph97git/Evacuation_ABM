@@ -6,5 +6,5 @@ public class World {
 		double width = depth*1.2647;
 		Layout2Room twoRoom = new Layout2Room((int) width, depth);
 		twoRoom.run();
-	}
+	} 
 }

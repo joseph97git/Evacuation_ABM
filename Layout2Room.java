@@ -234,7 +234,7 @@ public class Layout2Room extends JPanel implements ActionListener {
         Obstacle rightWall2 = new Obstacle(xCoord2 + width2, yCoord2 - THICKNESS,
             THICKNESS, height2 + 2 * THICKNESS);
         Obstacle topWall2 = new Obstacle(xCoord2, yCoord2 - THICKNESS, width2
-            + THICKNESS, THICKNESS);
+            + THICKNESS, THICKNESS); 
         Obstacle bottomWall2 = new Obstacle(xCoord2, yCoord2 + height2, width2
             + THICKNESS, THICKNESS);
         Obstacle leftWall_12 = new Obstacle(xCoord2, yCoord2, THICKNESS,

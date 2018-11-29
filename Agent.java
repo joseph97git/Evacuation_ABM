@@ -23,7 +23,7 @@ public class Agent extends JPanel {
     private static final double vi = 0.8; // m * s^{-1}
     private static final double delta_t = 0.01; // s
     private static final double scaler = 150;
-
+ 
     private int id; // identification
     private double[] p; // position
     private double[] target; // exit
