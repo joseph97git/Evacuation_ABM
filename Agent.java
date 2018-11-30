@@ -22,7 +22,7 @@ public class Agent extends JPanel {
     private static final double kappa = 240000.0; // kg * m^{-1} * s^{-1}
     private static final double vi = 0.8; // m * s^{-1}
     private static final double delta_t = 0.01; // s
-    private static final double scaler = 150;
+    private static final double scaler = 75;
  
     private int id; // identification
     private double[] p; // position
@@ -410,7 +410,7 @@ public class Agent extends JPanel {
      */
     public void updateTarget() {
     	double x = dist_ij(this.p, this.target);
-    	if(x < 4) {
+    	if(x < 5) {
         	this.setTarget(this.mainExit); 
         	System.out.println("X: " + Double.toString(this.target[0]) + " Y: " + Double.toString(this.target[1]));
         }

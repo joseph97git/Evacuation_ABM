@@ -42,54 +42,11 @@ public class Layout2Room extends JPanel implements ActionListener {
         this.width = width;
         this.depth = depth;
         this.timer = new Timer(5, this);
-        agents = new Agent[4];
+        agents = new Agent[30];
+        int half = this.agents.length/2;
         
-        //agent 1
-        double[] v_init1 = new double[2];
-        v_init1[0] = 0.0;
-        v_init1[1] = 0.0;
-
-        double[] pos1 = new double[2];
-        pos1[0] = 30.0;
-        pos1[1] = 50.0;
-       
-        //agent 2
-        double[] v_init2 = new double[2];
-        v_init2[0] = 0.0;
-        v_init2[1] = 0.0;
-
-        double[] pos2 = new double[2];
-        pos2[0] = 60.0;
-        pos2[1] = 50.0;
         
-      //agent 3
-        double[] v_init3 = new double[2];
-        v_init3[0] = 0.0;
-        v_init3[1] = 0.0;
-
-        double[] pos3 = new double[2];
-        pos3[0] = 700.0;
-        pos3[1] = 50.0;
-       
-        //agent 4
-        double[] v_init4 = new double[2];
-        v_init4[0] = 0.0;
-        v_init4[1] = 0.0;
-
-        double[] pos4 = new double[2];
-        pos4[0] = 600.0;
-        pos4[1] = 50.0;
-
-        Agent agent1 = new Agent(0, pos1, 15, 80.0, v_init1, this.agents, null);
-        Agent agent2 = new Agent(1, pos2, 15, 80.0, v_init2, this.agents, null);
-        Agent agent3 = new Agent(2, pos3, 15, 80.0, v_init3, this.agents, null);
-        Agent agent4 = new Agent(3, pos4, 15, 80.0, v_init4, this.agents, null);
-
-        this.agents[0] = agent1;
-        this.agents[1] = agent2;
-        this.agents[2] = agent3;
-        this.agents[3] = agent4;
-        
+        //room2 coordinates        
         double xCoord2 = ((this.width - (this.depth - 80) * 1.2647))*5 ;
         double yCoord2 = 25;
         double width2 = ((this.depth - 80) * 1.2647)/3;
@@ -97,8 +54,8 @@ public class Layout2Room extends JPanel implements ActionListener {
         Rectangle2D room2 = new Rectangle2D.Double(xCoord2+THICKNESS, // Center the room
             yCoord2, width2, height2);
       
-
         
+        //room 1 coordinates
         double xCoord = 25;
         double yCoord = 25;
         double width1 = ((this.depth - 80) * 1.2647)/3;
@@ -114,30 +71,57 @@ public class Layout2Room extends JPanel implements ActionListener {
         Exit exit2 = new Exit(room2.getX(), room2.getY() + room2
                 .getWidth() / 18.889, room2.getWidth() / 200, room2.getHeight()
                     / 7.5055);
+        
+        Exit mainExit = new Exit(xCoord2 - 100, 600.0+THICKNESS,room2.getHeight()
+                / 7.5055,room2.getWidth() / 200);
 
-               
-     // 4 agents and 2 targets
+        //exits set to target for agents
         double[] target = new double[2];
-        target[0] = exit1.xCoord();
+        target[0] = exit1.xCoord()+10;
         target[1] = exit1.yCoord() + exit1.length() / 2;
-        this.agents[0].setTarget(target);
-        this.agents[1].setTarget(target);
+
         
         double[] target2 = new double[2];
-        target2[0] = exit2.xCoord();
+        target2[0] = exit2.xCoord()-10;
         target2[1] = exit2.yCoord() + exit2.length() / 2;
-        this.agents[2].setTarget(target2);
-        this.agents[3].setTarget(target2);
+        
+        double[] hallTarget = new double[2];
+        hallTarget[0] = mainExit.xCoord()+15;
+        hallTarget[1] = mainExit.yCoord();   
+        
 
-        // radius of a person : door depth = 1:6.04
-        // update agents' radii based on the proportions
-        this.agents[0].updateR(exit1.length() / 6.04);
-        this.agents[1].updateR(exit1.length() / 6.04);
-        this.agents[2].updateR(exit2.length() / 6.04);
-        this.agents[3].updateR(exit2.length() / 6.04);
+
+       
+        for(int x=0; x < half;x++) {
+        	double[] v_init = new double[2];
+            v_init[0] = 0.0;
+            v_init[1] = 0.0;
+
+            double[] pos = new double[2];
+            pos[0] = 200*Math.random() + 50;
+            pos[1] = 200*Math.random() + 50;
+            
+            double[] v_init1 = new double[2];
+            v_init1[0] = 0.0;
+            v_init1[1] = 0.0;
+
+            double[] pos1 = new double[2];
+            pos1[0] = 200*Math.random() + xCoord2 + THICKNESS;
+            pos1[1] = 200*Math.random() + 50;
+            
+            Agent a = new Agent(x, pos, 15, 80.0, v_init, this.agents, null);
+            Agent b = new Agent(x+half, pos1, 15,80.0, v_init1, this.agents, null);
+            this.agents[x] = a;
+            this.agents[x].setTarget(target);
+            this.agents[x].updateR(exit1.length() / 6.04);
+            this.agents[x].setExit(hallTarget);
+            this.agents[x+half] = b;
+            this.agents[x+half].setTarget(target2);
+            this.agents[x+half].updateR(exit1.length() / 6.04);
+            this.agents[x+half].setExit(hallTarget);
+        }
 
     }
-
 
     /**
      * Runs the room evacuation.
@@ -262,15 +246,14 @@ public class Layout2Room extends JPanel implements ActionListener {
         graphics.setPaint(Color.GREEN);
         graphics.fill(exit2.door());
 
-
-              
-
-        graphics.setPaint(Color.BLUE);
-        graphics.fill(this.agents[0].person());
-        graphics.fill(this.agents[1].person());
-        graphics.setPaint(Color.RED);
-        graphics.fill(this.agents[2].person());
-        graphics.fill(this.agents[3].person());
+        
+        //populate the agents 
+        for(int x = 0 ; x < this.agents.length;x++) {
+        	graphics.setPaint(Color.BLUE);
+        	if(x > this.agents.length/2- 1)
+        		graphics.setPaint(Color.RED);
+            graphics.fill(this.agents[x].person());
+        }
         
                 
         //hallway and main exit
@@ -296,11 +279,7 @@ public class Layout2Room extends JPanel implements ActionListener {
         double[] hallTarget = new double[2];
         hallTarget[0] = mainExit.xCoord()+15;
         hallTarget[1] = mainExit.yCoord();   
-        
-        this.agents[0].setExit(hallTarget);
-        this.agents[1].setExit(hallTarget);
-        this.agents[2].setExit(hallTarget);
-        this.agents[3].setExit(hallTarget);    
+          
 
         
         
