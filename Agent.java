@@ -32,7 +32,7 @@ public class Agent extends JPanel {
     private double mass;
     private double[] velocity;
     private Agent[] other; // all agents
-    private Wall[] walls;
+    private Obstacle[] walls;
     private Ellipse2D.Double person; // GUI representation
 
 
@@ -46,7 +46,7 @@ public class Agent extends JPanel {
         double m,
         double[] v,
         Agent[] other,
-        Wall[] walls) {
+        Obstacle[] walls) {
         this.id = id;
         this.p = p;
         this.radius = r;
@@ -135,7 +135,7 @@ public class Agent extends JPanel {
                 }
             }
         }
-        
+        boolean wallIntersect = false;
         for (int i = 0; i < this.walls.length; i++)
         {
         	     if (this.isTouching2(this, this.walls[i]))
@@ -143,28 +143,34 @@ public class Agent extends JPanel {
         	    	      double[]wf = this.f_iW(this, this.walls[i]);
         	    	      wallForce[0] = wallForce[0] + wf[0];
         	    	      wallForce[0] = wallForce[0] + wf[1];
+        	    	      wallIntersect = true;
         	     }
         }
         
         
         
+        
         //add random moves
         double random = Math.random();
-        
+        double[] ftot = new double[2];
 
         // calculate force
-        double[] ftot = new double[2];
-        if (wallForce[0] > 0 || wallForce[1] > 0)
+        
+        /**
+        if (wallIntersect == true)
         {
-        	     ftot[0] = -2*wallForce[0];
-        	     ftot[1] = -2*wallForce[1];
+        	     ftot[0] = interactiveForce[0] - .3 * wallForce[0];
+        	     ftot[1] = interactiveForce[1] - .3 * wallForce[1];
         	
         }
+        
         else
+        **/
         {
-        	ftot[0] = agentForce[0] + interactiveForce[0] - 5 * wallForce[0];
-        ftot[1] = agentForce[1] + interactiveForce[1] - 5 * wallForce[1];
+        	     ftot[0] = agentForce[0] + interactiveForce[0] - wallForce[0];
+             ftot[1] = agentForce[1] + interactiveForce[1] - wallForce[1];
         }
+        
         	
         	//random behavior 
         	/**
@@ -189,15 +195,15 @@ public class Agent extends JPanel {
         return ftot;
     }
     
-    public double[] f_iW(Agent i, Wall w) {
-    		double d_iw = this.dist_ij(w.p(), this.p())/scaler;
+    public double[] f_iW(Agent i, Obstacle w) {
+    		double d_iw = this.dist_ij(this.wallIntersection(i, w), this.p())/scaler;
     		double[] result = new double[2];
     		double[] n_iW = this.n_iW(i, w);
     		double[] t_iW = this.t_iW(i, w);
     		double[] vel = this.velocity();
     		double aRadius = this.radius() / scaler;
-    		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + kappa*g(aRadius- d_iw))*n_iW[0];		
-    		double tangentScaler = k*(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
+    		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + k*g(aRadius- d_iw))*n_iW[0];		
+    		double tangentScaler = -kappa*g(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
     		double[] wallForce = new double[2];
     		double[] tangentForce = new double[2];
     	    wallForce[0] = wallScaler*n_iW[0] / scaler;
@@ -293,13 +299,13 @@ public class Agent extends JPanel {
      *            The wall
      * @return The resulting force vector.
      */
-    public double[] n_iW(Agent i, Wall w) {
-    	    double[] wallPos = i.wallIntersection(this, w);
+    public double[] n_iW(Agent i, Obstacle w) {
+    	    double[] wallPos = i.wallIntersection(i, w);
         double[] thisPos = new double[] {this.getX(), this.getY()};
         double d_ij = this.dist_ij(thisPos, wallPos);
         double[] f_iW = new double[2];
-        f_iW[0] = (thisPos[0] - wallPos[0])/d_ij;
-        f_iW[1] = (thisPos[1] - wallPos[1])/d_ij;
+        f_iW[0] = (wallPos[0] - thisPos[0])/d_ij;
+        f_iW[1] = (wallPos[1] - thisPos[1])/d_ij;
         return f_iW;
     }
     
@@ -313,9 +319,9 @@ public class Agent extends JPanel {
      *            The wall
      * @return The resulting force vector.
      */
-    public double[] t_iW(Agent i, Wall w) {
+    public double[] t_iW(Agent i, Obstacle w) {
     		double[] fiW = this.n_iW(this, w);
-    		double[] t_iW = new double[] {fiW[1], -fiW[0]};
+    		double[] t_iW = new double[] {-fiW[1], fiW[0]};
     		return t_iW;
     }
     
@@ -449,11 +455,11 @@ public class Agent extends JPanel {
      *            the wall
      * @return True, if touching. False, if not.
      */
-    public boolean isTouching2(Agent a, Wall w) {
+    public boolean isTouching2(Agent a, Obstacle w) {
         double xmin = w.xCoord();
         double ymin = w.yCoord();
-        double xmax = w.xCoord() + w.getXRange();
-        double ymax = w.yCoord() + w.getYRange();
+        double xmax = w.xCoord() + w.width();
+        double ymax = w.yCoord() + w.height();
         double[] xy = a.p();
         if (((xy[0] + a.radius() >= xmin) && (xy[0] - a.radius() <= xmax)) && ((xy[1] + a.radius() >= ymin) && (xy[1] - a.radius() <= ymax)))
         {
@@ -472,29 +478,21 @@ public class Agent extends JPanel {
      * @param w wall
      * @return xy intersection point to use for force
      */
-    public double[] wallIntersection(Agent a, Wall w) {
+    public double[] wallIntersection(Agent a, Obstacle w) {
     		double xmin = w.xCoord();
         double ymin = w.yCoord();
-        double xmax = w.xCoord() + w.getXRange();
-        double ymax = w.yCoord() + w.getYRange();
+        double xmax = w.xCoord() + w.width();
+        double ymax = w.yCoord() + w.height();
         double[] xy = a.p();
         double[] result = new double[2];
-        if (xy[0] + a.radius() >= xmax)
+        if (xy[0] < xmax)
         {
-        		result[0] = xy[0] + a.radius();
+        	     result[0] = xy[0] + a.radius();
+        	     result[1] = xy[1];
         }
-        if (xy[0] - a.radius() <= xmin)
-        {
-        		result[0] = xy[0] - a.radius();
-        }
-        if (xy[1] + a.radius() >= ymax)
-        {
-        		result[1] = xy[1] + a.radius();
-        }
-        if (xy[1] - a.radius() <= ymin)
-        {
-        		result[1] = xy[1] - a.radius();
-        }
+        
+        
+      
         return result;
     }
     /**

@@ -122,4 +122,9 @@ public class Obstacle {
     public void setHeight(double h) {
         this.height = h;
     }
+    
+    public double[] p() {
+		double[] pos = new double[] {this.xCoord(), this.yCoord()};
+		return pos;
+	}
 }
