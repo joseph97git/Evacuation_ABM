@@ -5,15 +5,15 @@ public class World {
 		int depth = 800;
 		double width;
 		
-//		// simulation for one room
-//		width = depth*1.2647 + 200;
-//		Layout1Room oneRoom = new Layout1Room((int) width, depth);
-//		oneRoom.run();
-		
-		// simulation for two rooms
-		width = depth*1.2647;
-		Layout2Room twoRoom = new Layout2Room((int) width, depth);
-		twoRoom.run();
+		// simulation for one room
+		width = depth*1.2647 + 200;
+		Layout1Room oneRoom = new Layout1Room((int) width, depth);
+		oneRoom.run();
+		 
+//		// simulation for two rooms
+//		width = depth*1.2647;
+//		Layout2Room twoRoom = new Layout2Room((int) width, depth);
+//		twoRoom.run();
 		
 	} 
 }

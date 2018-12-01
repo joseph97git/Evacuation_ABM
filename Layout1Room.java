@@ -193,7 +193,7 @@ public class Layout1Room extends JPanel implements ActionListener {
         graphics.setPaint(Color.GREEN);
         graphics.fill(exit1.door());
         graphics.fill(mainExit.door());
-        
+         
         
         
         // Populate agents
