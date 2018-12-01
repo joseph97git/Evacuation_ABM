@@ -69,7 +69,7 @@ public class Layout1Room extends JPanel implements ActionListener {
         		((this.width - THICKNESS*2) - (this.xCoord + this.rmWidth + THICKNESS))/2 - ((room.getHeight() / 7.5055) / 2); 
         double exit2Y = this.yCoord + this.rmHeight + THICKNESS/2 - exit2H/2;
         this.mainExit = new Exit(exit2X, exit2Y, exit2W, exit2H);
-        
+         
         //exits set to target for agents
         double[] target = new double[2];
         target[0] = this.exit1.xCoord();
@@ -79,41 +79,19 @@ public class Layout1Room extends JPanel implements ActionListener {
         target2[0] = mainExit.xCoord() + mainExit.width() / 2;
         target2[1] = mainExit.yCoord();
         
-//        double min = 100;
-//        double max = 700;
-//        double[][] pre_pos = new double[n][2];
-//        pre_pos[0][0] = 0.0;
-//        pre_pos[0][1] = 0.0;
-//        
         for (int i = 0; i < n; i++) {
-//        	Random r = new Random();
-        	
+
         	double[] vel = new double[2];
             vel[0] = 0.0;
-            vel[1] = 0.0;
-            
-//            double[] cur_pos = new double[2];
-//            cur_pos[0] = min + (max - min)*r.nextDouble();
-//            cur_pos[1] = min + (max - min)*r.nextDouble();
+            vel[1] = 0.0;           
              
             double[] pos = new double[2];
             pos[0] = 600*Math.random() + 100;
             pos[1] = 600*Math.random() + 100;
             
-//            for (int j = 0; j < pre_pos.length; j++) {
-//            	if ((cur_pos[0] >= pre_pos[j][0] - 100 && cur_pos[0] <= pre_pos[j][0] + 100) && 
-//            			(cur_pos[1] >= pre_pos[j][1] - 100 && cur_pos[1] <= pre_pos[j][1] + 100)) {
-//            		cur_pos[0] = min + (max - min)*r.nextDouble();
-//                    cur_pos[1] = min + (max - min)*r.nextDouble();
-//            	}
-//            }
-            
         	this.agents[i] = new Agent(i, pos, exit1.length() / 3.02, 800.0, vel, this.agents, null);
         	this.agents[i].setTarget(target);
         	this.agents[i].setExit(target2);
-//        	pre_pos[i][0] = cur_pos[0];
-//        	pre_pos[i][1] = cur_pos[1];
-        	
         }
         
     }
@@ -224,30 +202,6 @@ public class Layout1Room extends JPanel implements ActionListener {
         	graphics.fill(this.agents[i].person());
         }
         
-//        for (int i=0; i < this.agents.length; i++) {
-//        	if ((this.agents[i].p()[0] >= exit1X) &&
-//        			(this.agents[i].p()[1] >= exit1Y)) {  
-//                this.agents[i].setTarget(target2);
-//        	}
-//        }
-        
-        
-        
-//        this.agents[0].setTarget(target);
-//        this.agents[1].setTarget(target);
-//
-//        // radius of a person : door depth = 1:3.04
-//        // update agents' radii based on the proportions
-//        this.agents[0].updateR(exit1.length() / 6.04);
-//        this.agents[1].updateR(exit1.length() / 6.04);
-//
-//        graphics.setPaint(Color.BLUE);
-//        graphics.fill(this.agents[0].person());
-//        graphics.fill(this.agents[1].person());
-        
-          double[] target2 = new double[2];
-          target2[0] = mainExit.xCoord() + mainExit.width() / 2;
-          target2[1] = mainExit.yCoord();  
     }
 
 }
