@@ -135,6 +135,7 @@ public class Agent extends JPanel {
                 }
             }
         }
+       
         boolean wallIntersect = false;
         for (int i = 0; i < this.walls.length; i++)
         {
@@ -146,6 +147,7 @@ public class Agent extends JPanel {
         	    	      wallIntersect = true;
         	     }
         }
+        
         
         
         
