@@ -12,7 +12,7 @@ import javax.swing.*;
  * one door, one agent.
  * 
  * @author Joseph Kim
- * @version 10.22.18
+ * @version 10.22.18 
  */
 public class Layout extends JPanel implements ActionListener {
 

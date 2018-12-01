@@ -22,11 +22,12 @@ public class Agent extends JPanel {
     private static final double kappa = 240000.0; // kg * m^{-1} * s^{-1}
     private static final double vi = 0.8; // m * s^{-1}
     private static final double delta_t = 0.01; // s
-    private static final double scaler = 150;
-
+    private static final double scaler = 75;
+ 
     private int id; // identification
     private double[] p; // position
     private double[] target; // exit
+    private double[] mainExit; // building exit
     private double radius;
     private double mass;
     private double[] velocity;
@@ -54,6 +55,7 @@ public class Agent extends JPanel {
         this.other = other;
         this.walls = walls;
         this.person = new Ellipse2D.Double(this.p[0] - r, this.p[1] - r, 2 * r, 2 * r);
+
     }
 
 
@@ -67,8 +69,8 @@ public class Agent extends JPanel {
         double[] vtime = new double[2];
         vtime[0] = this.velocity[0] * delta_t;
         vtime[1] = this.velocity[1] * delta_t;
-        if (this.id == 0)
-            System.out.println(Math.sqrt(this.velocity[0] * this.velocity[0] + this.velocity[1] * this.velocity[1]));
+        //if (this.id == 0)
+        //    System.out.println(Math.sqrt(this.velocity[0] * this.velocity[0] + this.velocity[1] * this.velocity[1]));
         // force time-step
         double[] ftime = new double[2];
         double[] force = this.f();
@@ -78,9 +80,11 @@ public class Agent extends JPanel {
         this.p[0] = (this.p[0] + vtime[0] * scaler);
         this.p[1] = (this.p[1] + vtime[1] * scaler);
         this.person.setFrame(this.p[0] - this.radius, this.p[1] - this.radius, 2 * this.radius, 2 * this.radius);
+        this.updateTarget();
         // velocity update
         this.velocity[0] = this.velocity[0] + ftime[0];
         this.velocity[1] = this.velocity[1] + ftime[1];
+
     }
 
 
@@ -493,9 +497,18 @@ public class Agent extends JPanel {
         }
         return result;
     }
-    
-    
+    /**
+     * update the target to the hallway exit once
+     * the agent leaves the room
+     */
+    public void updateTarget() {
+    	double x = dist_ij(this.p, this.target);
+    	if(x < 5) {
+        	this.setTarget(this.mainExit); 
+        	System.out.println("X: " + Double.toString(this.target[0]) + " Y: " + Double.toString(this.target[1]));
+        }
 
+    }
 
     /**
      * Gets the associated shape for
@@ -565,6 +578,9 @@ public class Agent extends JPanel {
         return this.velocity;
     }
 
+    public double[] mainExit() {
+    	return this.mainExit;
+    }
 
     /**
      * Sets the target coordinates
@@ -576,6 +592,9 @@ public class Agent extends JPanel {
         this.target = target;
     }
     
+    public void setExit(double[] e) {
+    	this.mainExit = e;
+    }
     /**
      * Update radius to fit the proportion
      * 

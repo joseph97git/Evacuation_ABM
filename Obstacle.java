@@ -24,7 +24,7 @@ public class Obstacle {
      *            The y coordinate
      * @param width
      *            The width
-     * @param length
+     * @param length 
      *            The length
      */
     public Obstacle(double x, double y, double width, double height) {

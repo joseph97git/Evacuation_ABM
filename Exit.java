@@ -42,7 +42,7 @@ public class Exit {
      * @return The x coordinate.
      */
     public double xCoord() {
-        return this.x;
+        return this.x; 
     }
 
 
