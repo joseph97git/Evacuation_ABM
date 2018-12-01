@@ -108,9 +108,8 @@ public class Layout1Room extends JPanel implements ActionListener {
 //            	}
 //            }
             
-        	this.agents[i] = new Agent(i, pos, 15, 800.0, vel, this.agents, null);
+        	this.agents[i] = new Agent(i, pos, exit1.length() / 3.02, 800.0, vel, this.agents, null);
         	this.agents[i].setTarget(target);
-        	this.agents[i].updateR(exit1.length() / 3.02);
         	this.agents[i].setExit(target2);
 //        	pre_pos[i][0] = cur_pos[0];
 //        	pre_pos[i][1] = cur_pos[1];
