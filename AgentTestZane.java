@@ -1,16 +1,24 @@
+import abbot.util.AWT;
 import student.TestCase;
 
 
 public class AgentTestZane extends TestCase {
 	private Agent a;
-	private Wall b;
+	private Obstacle b;
+	private Obstacle[] walls;
+	private Agent[] agents;
 	
 	public void setUp()
 	{
 		double[] pos = new double[] {0,0};
 		double[] vel = new double[] {1,1};
-		a = new Agent(1, pos, 3.0, 100.0, vel, null, null);
-		b = new Wall(1, 0, 4, 4);
+		b = new Obstacle(2, 0, 4, 4);
+		walls = new Obstacle[1];
+		walls[0] = b;
+		a = new Agent(1, pos, 3.0, 80.0, vel, null, walls);
+		agents = new Agent[1];
+		agents[0] = a;
+		
 	}
 	
 	/**
@@ -18,10 +26,20 @@ public class AgentTestZane extends TestCase {
 	 */
 	public void testWallForce()
 	{
-		double[] result = a.f_iW(a, b);
+		Obstacle c = new Obstacle(2, 0, 2, 2);
+		double[] result = a.f_iW(a, c);
 		//Ends up being 2.37... seems to be correct 
 		assertNull(result[0]);
 		
+		
+		
+	}
+	
+	public void testInt()
+	{
+		Obstacle c = new Obstacle(2, 0, 2, 2);
+		double[] res = a.wallIntersection(a, c);
+		assertEquals(3.0, res[0], .01);
 	}
 	
 	/**
@@ -32,6 +50,22 @@ public class AgentTestZane extends TestCase {
 		double[] result = a.n_iW(a, b);
 		assertEquals(0.0, result[1], .01);
 		
+	}
+	
+	public void testIntersect()
+	{
+		double[] result = a.wallIntersection(a, b);
+		assertEquals(3.0, result[0], .01);
+		assertEquals(0.0, result[1], .01);
+	}
+	
+	public void testF()
+	{
+		double[] pos = new double[] {0,0};
+		double[] vel = new double[] {1,1};
+		Agent d = new Agent(2, pos,  3.0, 80.0, vel, agents, walls );
+		double[] result = d.f();
+		assertEquals(0.0, result[0], 0.1);
 	}
 	
 	/**
@@ -50,7 +84,7 @@ public class AgentTestZane extends TestCase {
 	
 	public void testIsTouchingWall2()
 	{
-		Wall c = new Wall (5, 5, 4, 4);
+		Obstacle c = new Obstacle (5, 5, 4, 4);
 		assertFalse(a.isTouching2(a, c));
 	}
 	
