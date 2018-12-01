@@ -303,7 +303,7 @@ public class LayoutWallTest extends JPanel implements ActionListener {
         double[] hallTarget = new double[2];
         hallTarget[0] = mainExit.xCoord()+15;
         hallTarget[1] = mainExit.yCoord();   
-          
+          //
 
         
         
