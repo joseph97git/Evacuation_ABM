@@ -158,6 +158,12 @@ public class Agent extends JPanel {
         }
         else
         {
+        	ftot[0] = agentForce[0] + interactiveForce[0] - 5 * wallForce[0];
+        ftot[1] = agentForce[1] + interactiveForce[1] - 5 * wallForce[1];
+        }
+        	
+        	//random behavior 
+        	/**
         if (random > .00001)
         {
         ftot[0] = agentForce[0] + interactiveForce[0] - 5 * wallForce[0];
@@ -168,7 +174,9 @@ public class Agent extends JPanel {
         	ftot[0] = -agentForce[0] - interactiveForce[0] + wallForce[0];
         ftot[1] = -agentForce[1] - interactiveForce[1] + wallForce[1];
         }
-        }
+        **/
+        
+        
         
         
         
