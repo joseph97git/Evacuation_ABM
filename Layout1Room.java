@@ -61,7 +61,7 @@ public class Layout1Room extends JPanel implements ActionListener {
         double exit1W = room.getWidth() / 200;
         double exit1H = room.getHeight() / 7.5055;
         this.exit1 = new Exit(exit1X, exit1Y, exit1W, exit1H);
-        
+         
         // Hallway exit
         double exit2H = room.getWidth() / 200;
         double exit2W = room.getHeight() / 7.5055;
