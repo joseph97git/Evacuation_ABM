@@ -113,11 +113,11 @@ public class Layout2Room extends JPanel implements ActionListener {
             Agent b = new Agent(x+half, pos1, 15,80.0, v_init1, this.agents, null);
             this.agents[x] = a;
             this.agents[x].setTarget(target);
-            this.agents[x].updateR(exit1.length() / 3.04);
+            this.agents[x].updateR(exit1.length() / 6.04);
             this.agents[x].setExit(hallTarget);
             this.agents[x+half] = b;
             this.agents[x+half].setTarget(target2);
-            this.agents[x+half].updateR(exit1.length() / 3.04);
+            this.agents[x+half].updateR(exit1.length() / 6.04);
             this.agents[x+half].setExit(hallTarget);
         }
 

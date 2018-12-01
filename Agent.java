@@ -135,6 +135,7 @@ public class Agent extends JPanel {
                 }
             }
         }
+       
         boolean wallIntersect = false;
         for (int i = 0; i < this.walls.length; i++)
         {
@@ -150,6 +151,7 @@ public class Agent extends JPanel {
         
         
         
+        
         //add random moves
         double random = Math.random();
         double[] ftot = new double[2];
@@ -159,16 +161,17 @@ public class Agent extends JPanel {
         /**
         if (wallIntersect == true)
         {
-        	     ftot[0] = interactiveForce[0] - .3 * wallForce[0];
-        	     ftot[1] = interactiveForce[1] - .3 * wallForce[1];
+        	     ftot[0] = interactiveForce[0] + .001 * wallForce[0];
+        	     ftot[1] = interactiveForce[1] + .001 * wallForce[1];
         	
         }
         
         else
         **/
+        
         {
-        	     ftot[0] = agentForce[0] + interactiveForce[0] - wallForce[0];
-             ftot[1] = agentForce[1] + interactiveForce[1] - wallForce[1];
+        	     ftot[0] = agentForce[0] + interactiveForce[0] + 0*wallForce[0];
+             ftot[1] = agentForce[1] + interactiveForce[1] + 0*wallForce[0];
         }
         
         	
@@ -203,7 +206,7 @@ public class Agent extends JPanel {
     		double[] vel = this.velocity();
     		double aRadius = this.radius() / scaler;
     		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + k*g(aRadius- d_iw))*n_iW[0];		
-    		double tangentScaler = -kappa*g(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
+    		double tangentScaler = kappa*g(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
     		double[] wallForce = new double[2];
     		double[] tangentForce = new double[2];
     	    wallForce[0] = wallScaler*n_iW[0] / scaler;
@@ -211,8 +214,8 @@ public class Agent extends JPanel {
     	    tangentForce[0] = tangentScaler*t_iW[0] /scaler;
     	    tangentForce[1] = tangentScaler*t_iW[1] /scaler;
     	    
-    	    result[0] = wallForce[0] + tangentForce[0];
-    	    result[1] = wallForce[1] + tangentForce[1];
+    	    result[0] = wallForce[0] - tangentForce[0];
+    	    result[1] = wallForce[1] - tangentForce[1];
     	    
     				
     		return result;
@@ -304,8 +307,8 @@ public class Agent extends JPanel {
         double[] thisPos = new double[] {this.getX(), this.getY()};
         double d_ij = this.dist_ij(thisPos, wallPos);
         double[] f_iW = new double[2];
-        f_iW[0] = (wallPos[0] - thisPos[0])/d_ij;
-        f_iW[1] = (wallPos[1] - thisPos[1])/d_ij;
+        f_iW[0] = (thisPos[0] - wallPos[0])/d_ij;
+        f_iW[1] = (thisPos[1] - wallPos[1])/d_ij;
         return f_iW;
     }
     
@@ -484,11 +487,53 @@ public class Agent extends JPanel {
         double xmax = w.xCoord() + w.width();
         double ymax = w.yCoord() + w.height();
         double[] xy = a.p();
+        double rad = a.radius();
         double[] result = new double[2];
-        if (xy[0] < xmax)
+        if (xy[0] < xmin)
         {
-        	     result[0] = xy[0] + a.radius();
-        	     result[1] = xy[1];
+        	     if (xy[0] + rad == xmin)
+        	     {
+        	    	      result[0] = xmin;
+        	    	      result[1] = xy[1];
+        	     }
+        	     else if (xy[0] - rad == xmax)
+        	     {
+        	    	      result[0] = xmax;
+        	    	      result[1] = xy[1];
+        	     }
+        	     else if (xy[1] - rad == ymax)
+        	     {
+        	    	      result[0] = xy[0];
+        	    	      result[1] = xy[1] - rad;
+        	     }
+        	     else if(xy[1] + rad == ymin)
+        	     {
+        	    	     result[0] = xy[0];
+        	    	     result[1] = xy[1] + rad;
+        	     }
+        	     else if(xy[0] + rad > ymin) //&& xy[0] + rad < ymax)
+        	     {
+        	    	     result[0] = xy[0] + rad;
+        	    	     result[1] = xy[1];
+        	     }
+        	     else if (xy[0] - rad < ymax) //&& xy[0] - rad < ymax)
+        	     {
+        	    	     result[0] = xy[0] - rad;
+        	    	     result[1] = xy[1];
+        	     }
+        	     else if (xy[1] + rad > ymin) //&& xy[1] + rad < ymax))
+        	     {
+        	    	     result[0] = xy[0];
+        	    	     result[1] = xy[1] + rad;
+        	     }
+        	     else
+        	     {
+        	    	     result[0] = xy[0];
+        	    	     result[1] = xy[1] - rad;
+        	     }
+        	    	 
+        	     
+        	     
         }
         
         
