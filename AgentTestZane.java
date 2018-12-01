@@ -10,7 +10,7 @@ public class AgentTestZane extends TestCase {
 		double[] pos = new double[] {0,0};
 		double[] vel = new double[] {1,1};
 		a = new Agent(1, pos, 3.0, 100.0, vel, null, null);
-		b = new Wall(1, 0);
+		b = new Wall(1, 0, 4, 4);
 	}
 	
 	/**
@@ -41,6 +41,17 @@ public class AgentTestZane extends TestCase {
 	{
 		double[] result = a.t_iW(a, b);
 		assertEquals(-1.0,result[1], .01);
+	}
+	
+	public void testIsTouchingWall1()
+	{
+		assertTrue(a.isTouching2(a, b));
+	}
+	
+	public void testIsTouchingWall2()
+	{
+		Wall c = new Wall (5, 5, 4, 4);
+		assertFalse(a.isTouching2(a, c));
 	}
 	
 	
