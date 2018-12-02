@@ -143,7 +143,7 @@ public class Agent extends JPanel {
         	     {
         	    	      double[]wf = this.f_iW(this, this.walls[i]);
         	    	      wallForce[0] = wallForce[0] + wf[0];
-        	    	      wallForce[0] = wallForce[0] + wf[1];
+        	    	      wallForce[1] = wallForce[1] + wf[1];
         	    	      wallIntersect = true;
         	     }
         }
@@ -161,17 +161,18 @@ public class Agent extends JPanel {
         /**
         if (wallIntersect == true)
         {
-        	     ftot[0] = interactiveForce[0] + .001 * wallForce[0];
-        	     ftot[1] = interactiveForce[1] + .001 * wallForce[1];
+        	     ftot[0] = interactiveForce[0] + 5 * wallForce[0];
+        	     ftot[1] = interactiveForce[1] + 5 * wallForce[1];
         	
         }
         
         else
         **/
         
+        
         {
-        	     ftot[0] = agentForce[0] + interactiveForce[0] + 0*wallForce[0];
-             ftot[1] = agentForce[1] + interactiveForce[1] + 0*wallForce[0];
+        	     ftot[0] = agentForce[0] + interactiveForce[0] + wallForce[0];
+             ftot[1] = agentForce[1] + interactiveForce[1] + wallForce[1];
         }
         
         	
@@ -205,7 +206,7 @@ public class Agent extends JPanel {
     		double[] t_iW = this.t_iW(i, w);
     		double[] vel = this.velocity();
     		double aRadius = this.radius() / scaler;
-    		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + k*g(aRadius- d_iw))*n_iW[0];		
+    		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + k*g(aRadius - d_iw));		
     		double tangentScaler = kappa*g(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
     		double[] wallForce = new double[2];
     		double[] tangentForce = new double[2];
@@ -217,7 +218,8 @@ public class Agent extends JPanel {
     	    result[0] = wallForce[0] - tangentForce[0];
     	    result[1] = wallForce[1] - tangentForce[1];
     	    
-    				
+    		
+    	  
     		return result;
     		
     }
@@ -303,13 +305,13 @@ public class Agent extends JPanel {
      * @return The resulting force vector.
      */
     public double[] n_iW(Agent i, Obstacle w) {
-    	    double[] wallPos = i.wallIntersection(i, w);
-        double[] thisPos = new double[] {this.getX(), this.getY()};
+    	    double[] wallPos = this.wallIntersection(i, w);
+        double[] thisPos = this.p();
         double d_ij = this.dist_ij(thisPos, wallPos);
-        double[] f_iW = new double[2];
-        f_iW[0] = (thisPos[0] - wallPos[0])/d_ij;
-        f_iW[1] = (thisPos[1] - wallPos[1])/d_ij;
-        return f_iW;
+        double[] n_iW = new double[2];
+        n_iW[0] = (thisPos[0] - wallPos[0])/d_ij;
+        n_iW[1] = (thisPos[1] - wallPos[1])/d_ij;
+        return n_iW;
     }
     
     /**
@@ -323,8 +325,10 @@ public class Agent extends JPanel {
      * @return The resulting force vector.
      */
     public double[] t_iW(Agent i, Obstacle w) {
-    		double[] fiW = this.n_iW(this, w);
-    		double[] t_iW = new double[] {-fiW[1], fiW[0]};
+    		double[] tiW = this.n_iW(this, w);
+    		double[] t_iW = new double[2];
+    	    t_iW[0] = -1 * tiW[1];
+    	    t_iW[1] = tiW[0];
     		return t_iW;
     }
     
@@ -482,62 +486,43 @@ public class Agent extends JPanel {
      * @return xy intersection point to use for force
      */
     public double[] wallIntersection(Agent a, Obstacle w) {
-    		double xmin = w.xCoord();
+		double xmin = w.xCoord();
         double ymin = w.yCoord();
         double xmax = w.xCoord() + w.width();
         double ymax = w.yCoord() + w.height();
         double[] xy = a.p();
+        double x = xy[0];
+        double y = xy[1];
         double rad = a.radius();
         double[] result = new double[2];
-        if (xy[0] < xmin)
+        if (x < xmin)
         {
-        	     if (xy[0] + rad == xmin)
-        	     {
-        	    	      result[0] = xmin;
-        	    	      result[1] = xy[1];
-        	     }
-        	     else if (xy[0] - rad == xmax)
-        	     {
-        	    	      result[0] = xmax;
-        	    	      result[1] = xy[1];
-        	     }
-        	     else if (xy[1] - rad == ymax)
-        	     {
-        	    	      result[0] = xy[0];
-        	    	      result[1] = xy[1] - rad;
-        	     }
-        	     else if(xy[1] + rad == ymin)
-        	     {
-        	    	     result[0] = xy[0];
-        	    	     result[1] = xy[1] + rad;
-        	     }
-        	     else if(xy[0] + rad > ymin) //&& xy[0] + rad < ymax)
-        	     {
-        	    	     result[0] = xy[0] + rad;
-        	    	     result[1] = xy[1];
-        	     }
-        	     else if (xy[0] - rad < ymax) //&& xy[0] - rad < ymax)
-        	     {
-        	    	     result[0] = xy[0] - rad;
-        	    	     result[1] = xy[1];
-        	     }
-        	     else if (xy[1] + rad > ymin) //&& xy[1] + rad < ymax))
-        	     {
-        	    	     result[0] = xy[0];
-        	    	     result[1] = xy[1] + rad;
-        	     }
-        	     else
-        	     {
-        	    	     result[0] = xy[0];
-        	    	     result[1] = xy[1] - rad;
-        	     }
-        	    	 
-        	     
-        	     
+        	result[0] = xmin;
+        }
+        if (x > xmax)
+        {
+        	result[0] = xmax;
+        }
+        
+        if (x <= xmax && x >= xmin)
+        {
+        	result[0] = xy[0];
         }
         
         
-      
+        if (y < ymin)
+        {
+        	result[1] = ymin;
+        }
+        if(y > ymax)
+        {
+        	result[1] = ymax;
+        }
+        if (y <= ymax && y >= ymin)
+        {
+        	result[1] = xy[1];
+        }
+
         return result;
     }
     /**

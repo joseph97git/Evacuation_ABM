@@ -23,6 +23,7 @@ public class Layout2Room extends JPanel implements ActionListener {
 
     private static final double THICKNESS = 25;
     private Agent[] agents;
+    private Obstacle[] walls;
     private int width;
     private int depth;
     private Timer timer;
@@ -42,7 +43,8 @@ public class Layout2Room extends JPanel implements ActionListener {
         this.width = width;
         this.depth = depth;
         this.timer = new Timer(5, this);
-        agents = new Agent[30];
+        agents = new Agent[12];
+        walls = new Obstacle[14];
         int half = this.agents.length/2;
         
         
@@ -109,15 +111,15 @@ public class Layout2Room extends JPanel implements ActionListener {
             pos1[0] = 200*Math.random() + xCoord2 + THICKNESS;
             pos1[1] = 200*Math.random() + 50;
             
-            Agent a = new Agent(x, pos, 15, 80.0, v_init, this.agents, null);
-            Agent b = new Agent(x+half, pos1, 15,80.0, v_init1, this.agents, null);
+            Agent a = new Agent(x, pos, 15, 80.0, v_init, this.agents, walls);
+            Agent b = new Agent(x+half, pos1, 15,80.0, v_init1, this.agents, walls);
             this.agents[x] = a;
             this.agents[x].setTarget(target);
-            this.agents[x].updateR(exit1.length() / 6.04);
+            this.agents[x].updateR(exit1.length() / 3.04);
             this.agents[x].setExit(hallTarget);
             this.agents[x+half] = b;
             this.agents[x+half].setTarget(target2);
-            this.agents[x+half].updateR(exit1.length() / 6.04);
+            this.agents[x+half].updateR(exit1.length() / 3.04);
             this.agents[x+half].setExit(hallTarget);
         }
 
@@ -195,6 +197,12 @@ public class Layout2Room extends JPanel implements ActionListener {
         graphics.fill(bottomWall.wall());
         graphics.fill(rightWall_1.wall());
         graphics.fill(rightWall_2.wall());
+        
+        walls[0] = leftWall;
+        walls[1] = topWall;
+        walls[2] = bottomWall;
+        walls[3] = rightWall_1;
+        walls[4] = rightWall_2;
 
         // Door width:room width = 1:200
         // Door depth:room depth = 1:7.5055
@@ -227,6 +235,12 @@ public class Layout2Room extends JPanel implements ActionListener {
             .getWidth() / 18.889 + room2.getHeight() / 7.5055, THICKNESS, height2
                 - ((room2.getY() + room2.getWidth() / 18.889 - yCoord2) + (room2
                     .getHeight() / 7.5055)));
+        
+        walls[5] = rightWall2;
+        walls[6] = topWall2;
+        walls[7] = bottomWall2;
+        walls[8] = leftWall_12;
+        walls[9] = leftWall_22;
         
         graphics.setPaint(Color.BLACK);
         graphics.draw(room2);
@@ -270,6 +284,11 @@ public class Layout2Room extends JPanel implements ActionListener {
         Obstacle leftHallWall_1 = new Obstacle((int)xCoord-THICKNESS, (int)height+2*(int)THICKNESS,
         		THICKNESS, 600-(int)height-50);
         Obstacle rightHallWall_2 = new Obstacle((int)xCoord2, (int)height+2*(int)THICKNESS, THICKNESS, 600-(int)height-50);
+        
+        walls[10] = botHallWall_1;
+        walls[11] = botHallWall_2;
+        walls[12] = leftHallWall_1;
+        walls[13] = rightHallWall_2;
         
         graphics.fill(botHallWall_1.wall());
         graphics.fill(botHallWall_2.wall());
