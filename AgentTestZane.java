@@ -5,16 +5,19 @@ import student.TestCase;
 public class AgentTestZane extends TestCase {
 	private Agent a;
 	private Obstacle b;
+	private Obstacle c;
 	private Obstacle[] walls;
 	private Agent[] agents;
 	
 	public void setUp()
 	{
-		double[] pos = new double[] {0,0};
-		double[] vel = new double[] {1,1};
-		b = new Obstacle(2, 0, 4, 4);
-		walls = new Obstacle[1];
+		double[] pos = new double[] {3,3};
+		double[] vel = new double[] {0,0};
+		b = new Obstacle(0, 3, 4, 4);
+		c = new Obstacle(6, 3, 4, 4);
+		walls = new Obstacle[2];
 		walls[0] = b;
+		walls[1] = c;
 		a = new Agent(1, pos, 3.0, 80.0, vel, null, walls);
 		agents = new Agent[1];
 		agents[0] = a;
@@ -26,9 +29,8 @@ public class AgentTestZane extends TestCase {
 	 */
 	public void testWallForce()
 	{
-		Obstacle c = new Obstacle(2, 0, 2, 2);
+		Obstacle c = new Obstacle(1, 0, 4, 4);
 		double[] result = a.f_iW(a, c);
-		//Ends up being 2.37... seems to be correct 
 		assertNull(result[0]);
 		
 		
@@ -37,9 +39,9 @@ public class AgentTestZane extends TestCase {
 	
 	public void testInt()
 	{
-		Obstacle c = new Obstacle(2, 0, 2, 2);
-		double[] res = a.wallIntersection(a, c);
-		assertEquals(3.0, res[0], .01);
+		Obstacle c = new Obstacle(5, 0, 2, 2);
+		double[] res = a.wallIntersection(a, b);
+		assertEquals(3.0, res[1], .01);
 	}
 	
 	/**
@@ -48,8 +50,20 @@ public class AgentTestZane extends TestCase {
 	public void testNiw()
 	{
 		double[] result = a.n_iW(a, b);
-		assertEquals(0.0, result[1], .01);
+		assertEquals(1.0, result[0], .01);
 		
+	}
+	
+	public void testNiw2()
+	{
+		double[] result = a.n_iW(a, c);
+		assertEquals(-1.0, result[0], .01);
+	}
+	
+	public void testtiw1()
+	{
+		double[] result = a.t_iW(a, b);
+		assertEquals(0.0, result[0], .01);
 	}
 	
 	public void testIntersect()
