@@ -493,7 +493,7 @@ public class Agent extends JPanel {
         double[] xy = a.p();
         double x = xy[0];
         double y = xy[1];
-        double rad = a.radius();
+        
         double[] result = new double[2];
         if (x < xmin)
         {
