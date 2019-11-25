@@ -55,7 +55,6 @@ public class Agent extends JPanel {
         this.other = other;
         this.walls = walls;
         this.person = new Ellipse2D.Double(this.p[0] - r, this.p[1] - r, 2 * r, 2 * r);
-
     }
 
 
@@ -84,7 +83,6 @@ public class Agent extends JPanel {
         // velocity update
         this.velocity[0] = this.velocity[0] + ftime[0];
         this.velocity[1] = this.velocity[1] + ftime[1];
-
     }
 
 
@@ -128,100 +126,68 @@ public class Agent extends JPanel {
         // compute inner-agent forces
         for (int i = 0; i < this.other.length; i++) {
             if (i != this.id) {
-                if (this.isTouching(this, this.other[i])) {
-                    double[] bf = this.f_ij(this, this.other[i]);
-                    interactiveForce[0] = interactiveForce[0] + bf[0];
-                    interactiveForce[1] = interactiveForce[1] + bf[1];
-                }
+				if (this.isTouching(this, this.other[i])) {
+					double[] bf = this.f_ij(this, this.other[i]);
+					interactiveForce[0] = interactiveForce[0] + bf[0];
+					interactiveForce[1] = interactiveForce[1] + bf[1];
+				}
             }
         }
-       
+        // compute agent-wall forces
         boolean wallIntersect = false;
-        for (int i = 0; i < this.walls.length; i++)
-        {
-        	     if (this.isTouching2(this, this.walls[i]))
-        	     {
-        	    	      double[]wf = this.f_iW(this, this.walls[i]);
-        	    	      wallForce[0] = wallForce[0] + wf[0];
-        	    	      wallForce[1] = wallForce[1] + wf[1];
-        	    	      wallIntersect = true;
-        	     }
+        for (int i = 0; i < this.walls.length; i++) {
+			if (this.isTouching2(this, this.walls[i])) {
+				double[]wf = this.f_iW(this, this.walls[i]);
+				wallForce[0] = wallForce[0] + wf[0];
+				wallForce[1] = wallForce[1] + wf[1];
+				wallIntersect = true;
+			}
         }
-        
-        
-        
-        
-        
         //add random moves
         double random = Math.random();
         double[] ftot = new double[2];
-
         // calculate force
-        
-        /**
-        if (wallIntersect == true)
-        {
-        	     ftot[0] = interactiveForce[0] + 5 * wallForce[0];
-        	     ftot[1] = interactiveForce[1] + 5 * wallForce[1];
-        	
-        }
-        
-        else
-        **/
-        
-        
-        {
-        	     ftot[0] = agentForce[0] + interactiveForce[0] + wallForce[0];
-             ftot[1] = agentForce[1] + interactiveForce[1] + wallForce[1];
-        }
-        
-        	
-        	//random behavior 
-        	/**
-        if (random > .00001)
-        {
-        ftot[0] = agentForce[0] + interactiveForce[0] - 5 * wallForce[0];
-        ftot[1] = agentForce[1] + interactiveForce[1] - 5 * wallForce[1];
-        }
-        else
-        {
-        	ftot[0] = -agentForce[0] - interactiveForce[0] + wallForce[0];
-        ftot[1] = -agentForce[1] - interactiveForce[1] + wallForce[1];
-        }
-        **/
-        
-        
-        
-        
-        
-        
+		ftot[0] = agentForce[0] + interactiveForce[0] + wallForce[0];
+		ftot[1] = agentForce[1] + interactiveForce[1] + wallForce[1];
         
         return ftot;
     }
     
+	
+	/**
+     * Calculates the force between the agent 
+     * and the wall.
+	 *
+     * @param i
+     *            The agent
+     * @param w
+     *            The wall
+     * @return The resulting force vector.
+     */
     public double[] f_iW(Agent i, Obstacle w) {
+			// define vectors
     		double d_iw = this.dist_ij(this.wallIntersection(i, w), this.p())/scaler;
-    		double[] result = new double[2];
+    		double[] result = new double[2]; // define resulting force vector
+			// get agent-wall component vectors
     		double[] n_iW = this.n_iW(i, w);
     		double[] t_iW = this.t_iW(i, w);
     		double[] vel = this.velocity();
     		double aRadius = this.radius() / scaler;
+			// calculate scaled forces
     		double wallScaler = (A * Math.exp((aRadius - d_iw)/B) + k*g(aRadius - d_iw));		
     		double tangentScaler = kappa*g(aRadius-d_iw)*(vel[0]*t_iW[0]+ vel[1]*t_iW[1]);
     		double[] wallForce = new double[2];
     		double[] tangentForce = new double[2];
+			// scale forces
     	    wallForce[0] = wallScaler*n_iW[0] / scaler;
     	    wallForce[1] = wallScaler*n_iW[1] / scaler;
     	    tangentForce[0] = tangentScaler*t_iW[0] /scaler;
     	    tangentForce[1] = tangentScaler*t_iW[1] /scaler;
-    	    
+    	    // apply force component vectors
     	    result[0] = wallForce[0] - tangentForce[0];
     	    result[1] = wallForce[1] - tangentForce[1];
     	    
-    		
-    	  
     		return result;
-    		
     }
 
 
@@ -234,10 +200,12 @@ public class Agent extends JPanel {
      * @return The motivation force vector.
      */
     public double[] f_i() {
+		// calc velocity using components
         double x_comp = this.velocity[0];
         double y_comp = this.velocity[1];
         double velNorm = Math.sqrt(x_comp * x_comp + y_comp * y_comp);
-        double[] zVec = new double[2];
+		// define motivation force vector
+        double[] zVec = new double[2]; 
         zVec[0] = 0.0;
         zVec[1] = 0.0;
         if (velNorm < vi) {
@@ -268,7 +236,7 @@ public class Agent extends JPanel {
      * @return The resulting body force vector.
      */
     public double[] f_ij(Agent i, Agent j) {
-     // base info
+    	// base info
         double r_ij = i.radius() / scaler + j.radius() / scaler;
         double d_ij = this.dist_ij(i.p(), j.p()) / scaler;
         double[] n_ij = this.n_ij(j.p());
@@ -305,7 +273,7 @@ public class Agent extends JPanel {
      * @return The resulting force vector.
      */
     public double[] n_iW(Agent i, Obstacle w) {
-    	    double[] wallPos = this.wallIntersection(i, w);
+    	double[] wallPos = this.wallIntersection(i, w);
         double[] thisPos = this.p();
         double d_ij = this.dist_ij(thisPos, wallPos);
         double[] n_iW = new double[2];
@@ -313,6 +281,7 @@ public class Agent extends JPanel {
         n_iW[1] = (thisPos[1] - wallPos[1])/d_ij;
         return n_iW;
     }
+	
     
     /**
      * Calculates the 'body force' and 'perpendicular force'
@@ -332,8 +301,6 @@ public class Agent extends JPanel {
     		return t_iW;
     }
     
-    
-
 
     /**
      * Calculates the direction to the
@@ -453,6 +420,7 @@ public class Agent extends JPanel {
         return dist_ij(a1.p(), a2.p()) <= (a1.radius() + a2.radius());
     }
     
+	
     /**
      * Checks if agent and wall are touching.
      * 
@@ -468,24 +436,26 @@ public class Agent extends JPanel {
         double xmax = w.xCoord() + w.width();
         double ymax = w.yCoord() + w.height();
         double[] xy = a.p();
-        if (((xy[0] + a.radius() >= xmin) && (xy[0] - a.radius() <= xmax)) && ((xy[1] + a.radius() >= ymin) && (xy[1] - a.radius() <= ymax)))
-        {
-            	return true;
+        if (((xy[0] + a.radius() >= xmin) && (xy[0] - a.radius() <= xmax)) 
+			&& ((xy[1] + a.radius() >= ymin) && (xy[1] - a.radius() <= ymax))) {
+        	return true;
         }
-        else
-        {
-             return false;
+        else {
+        	return false;
         }
-        
     }
     
+	
     /**
-     * 
+     * Gets intersection coordinates between 
+	 * the agent and the wall.
+	 *
      * @param a agent
      * @param w wall
      * @return xy intersection point to use for force
      */
     public double[] wallIntersection(Agent a, Obstacle w) {
+		// define boudaries
 		double xmin = w.xCoord();
         double ymin = w.yCoord();
         double xmax = w.xCoord() + w.width();
@@ -493,41 +463,23 @@ public class Agent extends JPanel {
         double[] xy = a.p();
         double x = xy[0];
         double y = xy[1];
-        
         double[] result = new double[2];
-        if (x < xmin)
-        {
-        	result[0] = xmin;
-        }
-        if (x > xmax)
-        {
-        	result[0] = xmax;
-        }
-        
-        if (x <= xmax && x >= xmin)
-        {
-        	result[0] = xy[0];
-        }
-        
-        
-        if (y < ymin)
-        {
-        	result[1] = ymin;
-        }
-        if(y > ymax)
-        {
-        	result[1] = ymax;
-        }
-        if (y <= ymax && y >= ymin)
-        {
-        	result[1] = xy[1];
-        }
+		// x component conditions
+        if (x < xmin) { result[0] = xmin; }
+        if (x > xmax) { result[0] = xmax; }
+        if (x <= xmax && x >= xmin) { result[0] = xy[0]; }
+        // y component conditions 
+        if (y < ymin) { result[1] = ymin; }
+        if(y > ymax) { result[1] = ymax; }
+        if (y <= ymax && y >= ymin) { result[1] = xy[1]; }
 
         return result;
     }
+	
+	
     /**
-     * update the target to the hallway exit once
-     * the agent leaves the room
+     * Update the target to the hallway exit once
+     * the agent leaves the room.
      */
     public void updateTarget() {
     	double x = dist_ij(this.p, this.target);
@@ -535,9 +487,9 @@ public class Agent extends JPanel {
         	this.setTarget(this.mainExit); 
         	System.out.println("X: " + Double.toString(this.target[0]) + " Y: " + Double.toString(this.target[1]));
         }
-
     }
 
+	
     /**
      * Gets the associated shape for
      * the agent.
@@ -606,10 +558,17 @@ public class Agent extends JPanel {
         return this.velocity;
     }
 
+	
+	/**
+     * Gets the main exit coordinates.
+     * 
+     * @return The exit coordinates.
+     */
     public double[] mainExit() {
     	return this.mainExit;
     }
 
+	
     /**
      * Sets the target coordinates
      * 
@@ -620,9 +579,18 @@ public class Agent extends JPanel {
         this.target = target;
     }
     
+	
+	/**
+     * Sets the exit coordinates
+     * 
+     * @param e
+     *            The exit coordinates
+     */
     public void setExit(double[] e) {
     	this.mainExit = e;
     }
+	
+	
     /**
      * Update radius to fit the proportion
      * 
